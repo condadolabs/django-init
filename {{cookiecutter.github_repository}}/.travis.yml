@@ -22,6 +22,11 @@ before_cache:
 install:
   {% if cookiecutter.add_ansible.lower() == 'y' %}- pip install ansible{% endif %}
   - pip install -r requirements/development.txt
+  {%- if cookiecutter.webpack.lower() == 'y' %}
+  - nvm install v6.3.0
+  - npm install -g npm
+  - npm install
+  {%- endif %}
 
 before_script:
 - export DATABASE_URL=postgres://postgres@localhost/{{ cookiecutter.main_module }}
@@ -29,10 +34,12 @@ before_script:
 {%- if cookiecutter.postgis.lower() == 'y' %}
 - psql -c "CREATE EXTENSION postgis;" -U postgres -d {{ cookiecutter.main_module }}
 {%- endif %}
+{% if cookiecutter.webpack.lower() == 'y' %}- touch webpack-stats.json{% endif %}
 
 script:
 - flake8
-- pytest --cov -v --tb=native
+{% if cookiecutter.webpack.lower() == 'y' %}- ./node_modules/.bin/webpack --config {{ cookiecutter.main_module }}/static/webpack.prod.config.js{% endif %}
+- py.test --cov -v --tb=native
 {% if cookiecutter.add_ansible.lower() == 'y' %}- ansible-playbook -i provisioner/hosts provisioner/site.yml --syntax-check{% endif %}
 
 notifications:

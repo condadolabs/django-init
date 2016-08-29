@@ -7,7 +7,8 @@ __Version:__ {{ cookiecutter.version }}
 
 ## Getting up and running
 
-Minimum requirements: **pip, fabric, python3{% if cookiecutter.add_celery.lower() == 'y' %}, redis{% endif %} & [postgres][install-postgres]{% if cookiecutter.postgis == 'y' %} with postgis{% endif %}**, setup is tested on Mac OSX only.
+Minimum requirements: **pip, fabric, python3{% if cookiecutter.webpack == 'y' %}, node, npm{% endif %} {% if cookiecutter.add_celery.lower() == 'y' %}, redis{% endif %} & [postgres][install-postgres]{% if cookiecutter.postgis == 'y' %} with postgis{% endif %}**, setup is tested on Mac OSX only.
+
 
 ```
 brew install postgres python3
@@ -27,6 +28,11 @@ Useful commands:
 - `fab serve` - start [django server](http://localhost:8000/)
 - `fab deploy_docs` - deploy docs to server
 - `fab test` - run the test locally with ipdb
+{%- if cookiecutter.webpack == 'y' %}
+- `fab watch` - build dev staticfiles and start [node server](http://localhost:3000/)
+- `fab build` - build dev staticfiles
+- `fab prod build` - build production staticfiles
+{%- endif %}
 
 **NOTE:** Checkout `fabfile.py` for all the options available and what/how they do it.
 
