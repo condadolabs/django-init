@@ -79,3 +79,6 @@ Session.vim
 
 # Pycharm project modules
 .idea/
+
+# Visual Studio Code modules
+.vscode/

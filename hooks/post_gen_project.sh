@@ -9,12 +9,21 @@ find . ! -path "*/venv/*" -type f -name "*.py" -exec bash -c "tail -n1 {} | read
 echo "${green}[Finished]${reset}"
 
 echo "==> Setup project dependencies? It will:"
+echo ""
+echo ""
 echo "  - Create virtualenv at './{{ cookiecutter.github_repository }}/venv/'."
+echo ""
 echo "  - Install development requirements inside virtualenv."
-echo "  - Create a postgres database named '{{ cookiecutter.main_module }}'."
+echo ""
+echo "  - Run docker-compose to create the containers."
+echo ""
 echo "  - Run './manage.py migrate'."
+echo ""
 echo "  - Initialize git."
+echo ""
 echo "  - Create git tag {{ cookiecutter.version }}."
+echo ""
+echo ""
 echo -n "Would you like to perform these steps? (y/[n]) "
 echo ""
 
@@ -41,6 +50,21 @@ fi
 
 if echo "{{ cookiecutter.add_celery }}" | grep -iq "^n"; then
     rm -rf {{ cookiecutter.main_module }}/celery.py
+fi
+
+if echo "{{ cookiecutter.integration_continuous.lower() }}" | grep -iq "travis"; then
+    rm -rf {{ cookiecutter.main_module }}/circle.yml
+    rm -rf {{ cookiecutter.main_module }}/Jenkinsfile
+fi
+
+if echo "{{ cookiecutter.integration_continuous.lower() }}" | grep -iq "jenkins"; then
+    rm -rf {{ cookiecutter.main_module }}/circle.yml
+    rm -rf {{ cookiecutter.main_module }}/.travis.yml
+fi
+
+if echo "{{ cookiecutter.integration_continuous.lower() }}" | grep -iq "circle"; then
+    rm -rf {{ cookiecutter.main_module }}/.travis.yml
+    rm -rf {{ cookiecutter.main_module }}/Jenkinsfile
 fi
 
 if echo "$yn" | grep -iq "^y"; then
@@ -73,9 +97,9 @@ if echo "$yn" | grep -iq "^y"; then
         echo "All set! Run these commands to get started:"
         echo ""
         echo "cd {{ cookiecutter.github_repository }}"
-        echo "./venv/bin/activate"
+        echo "source venv/bin/activate"
         echo "pytest"
-        echo "./manage.py runserver"
+        echo "python manage.py runserver"
         echo ""
         echo "============================================"
         echo "${green} ============> HAPPY CODING <============ ${reset}"

@@ -3,9 +3,11 @@
 
 See: http://www.fabfile.org/
 """
+
 from __future__ import absolute_import, unicode_literals, with_statement
 
 # Standard Library
+import time
 from contextlib import contextmanager as _contextmanager
 from functools import partial
 from os.path import dirname, isdir, join
@@ -38,7 +40,8 @@ def init(vagrant=False):
     """Prepare a local machine for development."""
 
     install_requirements()
-    local('createdb %(project_name)s' % env)  # create postgres database
+    local('docker-compose up -d')  # creating containers
+    time.sleep(5)
     manage('migrate')
 
 

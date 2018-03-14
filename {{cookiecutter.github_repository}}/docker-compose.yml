@@ -1,0 +1,18 @@
+version: '2'
+services:
+  db:
+    {% if cookiecutter.postgis.lower() == 'y' -%}
+    image: mdillon/postgis
+    {% else %}
+    image: postgres:9.5
+    {% endif %}
+    environment:
+      - POSTGRES_DB={{ cookiecutter.main_module }}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:latest
+    ports:
+        - "6379:6379"
